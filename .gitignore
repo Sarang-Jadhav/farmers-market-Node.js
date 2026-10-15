@@ -1,0 +1,69 @@
+# ==========================================
+# Dependencies
+# ==========================================
+node_modules/
+package-lock.json.bak
+
+# ==========================================
+# Environment files and secrets
+# ==========================================
+.env*
+!.env.example
+*.env
+
+# ==========================================
+# Compressed Archives & Backup Artifacts
+# ==========================================
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+zip.zip
+
+# ==========================================
+# Operating System & Cache Files
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ==========================================
+# Runtime Logs & Temporary Files
+# ==========================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.tmp
+*.temp
+
+# ==========================================
+# Editor & IDE Directories
+# ==========================================
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# ==========================================
+# Dynamic Uploads (public/images)
+# ==========================================
+# Exclude all dynamic user-uploaded product images
+public/images/*
+
+# Whitelist permanent UI assets and folder structure
+!public/images/default-product.jpg
+!public/images/.gitkeep

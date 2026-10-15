@@ -1,0 +1,45 @@
+<%- include('../partials/header') %>
+
+<h3 class="mb-4">Orders for My Products</h3>
+
+<% if (orders.length === 0) { %>
+  <div class="text-center py-5">
+    <i class="bi bi-receipt fs-1 text-muted"></i>
+    <p class="mt-2 text-muted">No orders yet.</p>
+  </div>
+<% } else { %>
+  <% orders.forEach(order => { %>
+    <div class="card mb-3 shadow-sm">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+          <strong>Customer:</strong> <%= order.userId.name %> (<%= order.userId.email %>)
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="text-muted small"><%= new Date(order.orderDate).toLocaleDateString('en-IN') %></span>
+          <span class="badge <%= order.paymentStatus === 'Paid' ? 'bg-success' : 'bg-warning text-dark' %>">
+            <%= order.paymentStatus %>
+          </span>
+        </div>
+      </div>
+      <div class="card-body">
+        <table class="table table-sm mb-0">
+          <thead><tr><th>Product</th><th>Qty (kg)</th><th>Rate</th><th>Subtotal</th></tr></thead>
+          <tbody>
+            <% order.items.forEach(item => { %>
+              <% if (item.productId) { %>
+                <tr>
+                  <td><%= item.productId.name %></td>
+                  <td><%= item.quantity %></td>
+                  <td>₹<%= item.price %>/kg</td>
+                  <td>₹<%= (item.price * item.quantity).toFixed(2) %></td>
+                </tr>
+              <% } %>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% }) %>
+<% } %>
+
+<%- include('../partials/footer') %>

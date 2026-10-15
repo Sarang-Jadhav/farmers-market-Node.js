@@ -1,0 +1,50 @@
+<%- include('../partials/header') %>
+
+<h3 class="mb-4">My Orders</h3>
+
+<% if (orders.length === 0) { %>
+  <div class="text-center py-5">
+    <i class="bi bi-bag-x fs-1 text-muted"></i>
+    <p class="mt-2 text-muted">You have no orders yet.</p>
+    <a href="/user/products" class="btn btn-success">Start Shopping</a>
+  </div>
+<% } else { %>
+  <% orders.forEach(order => { %>
+    <div class="card mb-3 shadow-sm">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+          <strong>Order Date:</strong>
+          <%= new Date(order.orderDate).toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' }) %>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+          <span class="fw-bold">₹<%= order.totalPrice.toFixed(2) %></span>
+          <span class="badge <%= order.paymentStatus === 'Paid' ? 'bg-success' : 'bg-warning text-dark' %>">
+            <%= order.paymentStatus %>
+          </span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row g-2">
+          <% order.items.forEach(item => { %>
+            <% if (item.productId) { %>
+              <div class="col-md-6">
+                <div class="d-flex align-items-center gap-2 border rounded p-2">
+                  <img src="/images/<%= item.productId.image %>" width="50" height="50"
+                       class="rounded" style="object-fit:cover"
+                       onerror="this.src='/images/default-product.jpg'" alt="">
+                  <div>
+                    <div class="fw-semibold"><%= item.productId.name %></div>
+                    <div class="text-muted small"><%= item.quantity %> kg &times; ₹<%= item.price %>/kg</div>
+                    <div class="text-success small">₹<%= (item.price * item.quantity).toFixed(2) %></div>
+                  </div>
+                </div>
+              </div>
+            <% } %>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+<% } %>
+
+<%- include('../partials/footer') %>

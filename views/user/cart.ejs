@@ -1,0 +1,88 @@
+<%- include('../partials/header') %>
+
+<h3 class="mb-4">My Cart</h3>
+
+<% if (!cart || cart.items.length === 0) { %>
+  <div class="text-center py-5">
+    <i class="bi bi-cart-x fs-1 text-muted"></i>
+    <p class="mt-2 text-muted">Your cart is empty.</p>
+    <a href="/user/products" class="btn btn-outline-success">Browse Products</a>
+  </div>
+<% } else { %>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-body p-0">
+          <table class="table mb-0 align-middle">
+            <thead class="table-light">
+              <tr><th>Product</th><th>Price/kg</th><th>Quantity (kg)</th><th>Subtotal</th><th></th></tr>
+            </thead>
+            <tbody>
+              <% cart.items.forEach(item => { %>
+                <% if (item.productId) { %>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        <img src="/images/<%= item.productId.image %>" width="48" height="48"
+                             class="rounded" style="object-fit:cover"
+                             onerror="this.src='/images/default-product.jpg'" alt="">
+                        <span><%= item.productId.name %></span>
+                      </div>
+                    </td>
+                    <td>₹<%= item.productId.pricePerKg %></td>
+                    <td style="width:140px">
+                      <form action="/user/cart/update" method="POST" class="d-flex gap-1">
+                        <input type="hidden" name="productId" value="<%= item.productId._id %>">
+                        <input type="number" name="quantity" class="form-control form-control-sm"
+                               value="<%= item.quantity %>" min="0.5" step="0.5" style="width:75px">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">✓</button>
+                      </form>
+                    </td>
+                    <td>₹<%= (item.productId.pricePerKg * item.quantity).toFixed(2) %></td>
+                    <td>
+                      <form action="/user/cart/remove" method="POST"
+                            onsubmit="return confirm('Remove this item?')">
+                        <input type="hidden" name="productId" value="<%= item.productId._id %>">
+                        <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></button>
+                      </form>
+                    </td>
+                  </tr>
+                <% } %>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Order Summary</h5>
+          <hr>
+          <% cart.items.forEach(item => { %>
+            <% if (item.productId) { %>
+              <div class="d-flex justify-content-between small mb-1">
+                <span><%= item.productId.name %> x <%= item.quantity %>kg</span>
+                <span>₹<%= (item.productId.pricePerKg * item.quantity).toFixed(2) %></span>
+              </div>
+            <% } %>
+          <% }) %>
+          <hr>
+          <div class="d-flex justify-content-between fw-bold fs-5">
+            <span>Total</span>
+            <span class="text-success">₹<%= total.toFixed(2) %></span>
+          </div>
+          <a href="/user/checkout" class="btn btn-success w-100 mt-3">
+            <i class="bi bi-credit-card me-1"></i>Proceed to Checkout
+          </a>
+          <a href="/user/products" class="btn btn-outline-secondary w-100 mt-2">
+            Continue Shopping
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

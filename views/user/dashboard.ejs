@@ -1,0 +1,40 @@
+<%- include('../partials/header') %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="mb-0">🛒 Welcome, <%= user.name.split(' ')[0] %>!</h2>
+    <p class="text-muted mb-0">Fresh produce, delivered to your door.</p>
+  </div>
+  <a href="/user/cart" class="btn btn-outline-primary position-relative">
+    <i class="bi bi-cart3 me-1"></i>Cart
+    <% if (cartCount > 0) { %>
+      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"><%= cartCount %></span>
+    <% } %>
+  </a>
+</div>
+
+<h5 class="mb-3">Featured Products</h5>
+<% if (products.length === 0) { %>
+  <p class="text-muted">No products available yet.</p>
+<% } else { %>
+  <div class="row g-3">
+    <% products.forEach(p => { %>
+      <div class="col-md-4 col-sm-6">
+        <div class="card h-100 shadow-sm">
+          <img src="/images/<%= p.image %>" class="card-img-top product-img" alt="<%= p.name %>"
+               onerror="this.src='/images/default-product.jpg'">
+          <div class="card-body">
+            <h6 class="card-title"><%= p.name %></h6>
+            <p class="text-muted small mb-1">By <%= p.farmerId.name %></p>
+            <p class="fw-bold text-success mb-0">₹<%= p.pricePerKg %>/kg</p>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+  <div class="text-center mt-4">
+    <a href="/user/products" class="btn btn-outline-success">View All Products</a>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,116 @@
+<%- include('../partials/header') %>
+
+<h3 class="mb-4">Checkout</h3>
+
+<div class="row">
+  <div class="col-md-7">
+    <div class="card shadow-sm mb-3">
+      <div class="card-header"><strong>Order Summary</strong></div>
+      <div class="card-body p-0">
+        <table class="table mb-0 align-middle">
+          <thead class="table-light">
+            <tr><th>Product</th><th>Qty</th><th>Rate</th><th>Subtotal</th></tr>
+          </thead>
+          <tbody>
+            <% cart.items.forEach(item => { %>
+              <% if (item.productId) { %>
+                <tr>
+                  <td><%= item.productId.name %></td>
+                  <td><%= item.quantity %> kg</td>
+                  <td>₹<%= item.productId.pricePerKg %>/kg</td>
+                  <td>₹<%= (item.productId.pricePerKg * item.quantity).toFixed(2) %></td>
+                </tr>
+              <% } %>
+            <% }) %>
+          </tbody>
+          <tfoot class="table-light">
+            <tr>
+              <td colspan="3" class="text-end fw-bold">Total Amount:</td>
+              <td class="fw-bold text-success">₹<%= total.toFixed(2) %></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-5">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Pay with Razorpay</h5>
+        <p class="text-muted small">Secure payment via Razorpay. Supports UPI, Cards, Netbanking.</p>
+        <hr>
+        <div class="d-flex justify-content-between mb-3">
+          <span class="fw-bold">Amount Due:</span>
+          <span class="fw-bold text-success fs-5">₹<%= total.toFixed(2) %></span>
+        </div>
+        <button id="rzp-button" class="btn btn-success w-100">
+          <i class="bi bi-credit-card me-1"></i>Pay Now ₹<%= total.toFixed(2) %>
+        </button>
+
+        <!-- Hidden form for verification POST -->
+        <form id="payment-form" action="/payment/verify" method="POST">
+          <input type="hidden" name="razorpay_order_id" id="rzp_order_id">
+          <input type="hidden" name="razorpay_payment_id" id="rzp_payment_id">
+          <input type="hidden" name="razorpay_signature" id="rzp_signature">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  document.getElementById('rzp-button').addEventListener('click', async () => {
+    const btn = document.getElementById('rzp-button');
+    btn.disabled = true;
+    btn.textContent = 'Processing...';
+
+    try {
+      const res = await fetch('/payment/create-order', { method: 'POST' });
+      const data = await res.json();
+
+      if (data.error) {
+        alert(data.error);
+        btn.disabled = false;
+        btn.textContent = 'Pay Now';
+        return;
+      }
+
+      const options = {
+        key: '<%= razorpayKey %>',
+        amount: data.amount,
+        currency: 'INR',
+        name: 'Farmers Market',
+        description: 'Fresh produce purchase',
+        order_id: data.orderId,
+        handler: function (response) {
+          document.getElementById('rzp_order_id').value = response.razorpay_order_id;
+          document.getElementById('rzp_payment_id').value = response.razorpay_payment_id;
+          document.getElementById('rzp_signature').value = response.razorpay_signature;
+          document.getElementById('payment-form').submit();
+        },
+        prefill: {
+          name: '<%= user.name %>',
+          email: '<%= user.email %>'
+        },
+        theme: { color: '#198754' },
+        modal: {
+          ondismiss: function () {
+            btn.disabled = false;
+            btn.textContent = 'Pay Now ₹<%= total.toFixed(2) %>';
+          }
+        }
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong. Please try again.');
+      btn.disabled = false;
+    }
+  });
+</script>
+
+<%- include('../partials/footer') %>

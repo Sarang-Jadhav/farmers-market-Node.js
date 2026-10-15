@@ -1,0 +1,73 @@
+<%- include('../partials/header') %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="mb-0">🌾 Farmer Dashboard</h2>
+    <p class="text-muted mb-0">Welcome back, <%= user.name %></p>
+  </div>
+  <a href="/farmer/products/add" class="btn btn-success"><i class="bi bi-plus-circle me-1"></i>Add Product</a>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card border-0 bg-success text-white shadow-sm">
+      <div class="card-body">
+        <h6 class="card-subtitle mb-1 opacity-75">Total Products</h6>
+        <h2 class="card-title mb-0"><%= productCount %></h2>
+        <i class="bi bi-box-seam fs-1 float-end opacity-25 mt-n3"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-0 bg-warning text-dark shadow-sm">
+      <div class="card-body">
+        <h6 class="card-subtitle mb-1 opacity-75">Recent Orders</h6>
+        <h2 class="card-title mb-0"><%= recentOrders.length %></h2>
+        <i class="bi bi-receipt fs-1 float-end opacity-25 mt-n3"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6 mb-4">
+    <h5>My Recent Products</h5>
+    <% if (products.length === 0) { %>
+      <p class="text-muted">No products yet. <a href="/farmer/products/add">Add your first product</a>.</p>
+    <% } else { %>
+      <div class="list-group">
+        <% products.forEach(p => { %>
+          <div class="list-group-item d-flex justify-content-between align-items-center">
+            <span><%= p.name %></span>
+            <span class="badge bg-success">₹<%= p.pricePerKg %>/kg</span>
+          </div>
+        <% }) %>
+      </div>
+      <a href="/farmer/products" class="btn btn-outline-success btn-sm mt-2">View All</a>
+    <% } %>
+  </div>
+
+  <div class="col-md-6 mb-4">
+    <h5>Recent Orders</h5>
+    <% if (recentOrders.length === 0) { %>
+      <p class="text-muted">No orders received yet.</p>
+    <% } else { %>
+      <div class="list-group">
+        <% recentOrders.forEach(o => { %>
+          <div class="list-group-item">
+            <div class="d-flex justify-content-between">
+              <span><%= o.userId.name %></span>
+              <span class="badge <%= o.paymentStatus === 'Paid' ? 'bg-success' : 'bg-warning text-dark' %>">
+                <%= o.paymentStatus %>
+              </span>
+            </div>
+            <small class="text-muted">₹<%= o.totalPrice.toFixed(2) %> &middot; <%= new Date(o.orderDate).toLocaleDateString() %></small>
+          </div>
+        <% }) %>
+      </div>
+      <a href="/farmer/orders" class="btn btn-outline-warning btn-sm mt-2">View All Orders</a>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

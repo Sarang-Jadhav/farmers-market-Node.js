@@ -1,0 +1,49 @@
+/* ---- Navbar themes ---- */
+.navbar-farmer {
+  background: linear-gradient(135deg, #1a6b3c, #2d9e58);
+}
+.navbar-customer {
+  background: linear-gradient(135deg, #1a4e8a, #2d7dd2);
+}
+.navbar-farmer .navbar-brand,
+.navbar-farmer .nav-link,
+.navbar-customer .navbar-brand,
+.navbar-customer .nav-link {
+  color: #fff !important;
+}
+.navbar-farmer .nav-link:hover,
+.navbar-customer .nav-link:hover {
+  color: rgba(255,255,255,0.75) !important;
+}
+
+/* ---- Product image ---- */
+.product-img {
+  height: 200px;
+  object-fit: cover;
+}
+
+/* ---- Role card on register ---- */
+.role-card {
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.role-card:has(input:checked) {
+  border-color: #0d6efd !important;
+  background: #f0f5ff;
+}
+
+/* ---- Stat card icon fix ---- */
+.card .bi {
+  line-height: 1;
+}
+
+/* ---- General ---- */
+body {
+  background: #f8f9fa;
+}
+.card {
+  border-radius: 12px;
+}
+.navbar {
+  border-radius: 0;
+}
